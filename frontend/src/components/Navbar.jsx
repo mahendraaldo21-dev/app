@@ -37,9 +37,6 @@ export default function Navbar() {
           }>
             Belanja
           </NavLink>
-          <NavLink to="/admin/login" data-testid="nav-admin" className="text-[#4A5568] hover:text-brand">
-            Admin
-          </NavLink>
         </nav>
 
         <Link
