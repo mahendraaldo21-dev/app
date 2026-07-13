@@ -7,8 +7,14 @@ export default function Footer() {
     <footer data-testid="footer" className="mt-24 border-t border-[#E2E8F0] bg-[#F3F1EC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid md:grid-cols-3 gap-8 text-sm">
         <div>
-          <div className="font-heading text-xl font-bold mb-2">{STORE_INFO.name}</div>
-          <p className="text-[#4A5568] leading-relaxed">{STORE_INFO.tagline}</p>
+          <div className="flex items-center gap-3">
+            <img src="/assets/logo.png" alt="Toko Lawanglimo" className="h-10 w-10 object-contain" />
+            <div>
+              <div className="font-heading text-xl font-bold text-[#1A2F5A]">{STORE_INFO.name}</div>
+              <div className="text-[10px] uppercase tracking-widest text-[#4A5568]">Alat Rumah Tangga</div>
+            </div>
+          </div>
+          <p className="mt-3 text-[#4A5568] leading-relaxed">{STORE_INFO.tagline}</p>
         </div>
         <div>
           <div className="text-xs uppercase tracking-widest text-[#4A5568] mb-2">Kontak</div>

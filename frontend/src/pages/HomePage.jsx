@@ -28,11 +28,11 @@ export default function HomePage() {
               Toko offline kini hadir online
             </div>
             <h1 className="mt-4 font-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#1A202C] leading-[1.05]">
-              Belanja kebutuhan harian, <span className="text-brand">tanpa repot</span>.
+              Alat rumah tangga <span className="text-brand">berkualitas</span>, tanpa repot.
             </h1>
             <p className="mt-5 text-base sm:text-lg text-[#4A5568] max-w-xl leading-relaxed">
               Selamat datang di <strong>{STORE_INFO.name}</strong>. Pilih barangmu,
-              gunakan kode diskon, lalu checkout langsung via WhatsApp.
+              gunakan kode kupon, lalu checkout langsung via WhatsApp.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/shop">

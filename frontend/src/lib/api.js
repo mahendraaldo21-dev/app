@@ -16,11 +16,11 @@ api.interceptors.request.use((config) => {
 
 export const STORE_INFO = {
   name: "Toko Lawanglimo",
-  phone_wa: "6281329856815", // International format for wa.me
+  phone_wa: "6285742364953", // International format for wa.me
   maps_link: "https://maps.app.goo.gl/ujmyhaeKVCEXRX717",
   // Generic embed - Google embed accepts any place query
   maps_embed: "https://www.google.com/maps?q=Lawanglimo&output=embed",
-  tagline: "Belanja kebutuhan harian dengan mudah, langsung dari toko offline kami.",
+  tagline: "Belanja alat rumah tangga berkualitas dengan mudah, langsung dari toko offline kami.",
 };
 
 export const resolveImageUrl = (url) => {

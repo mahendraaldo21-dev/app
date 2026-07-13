@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { ShoppingCart, Store } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { STORE_INFO } from "@/lib/api";
 
@@ -12,16 +12,18 @@ export default function Navbar() {
       className="sticky top-0 z-40 bg-[#FAF9F6]/85 backdrop-blur border-b border-[#E2E8F0]"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to="/" data-testid="nav-logo" className="flex items-center gap-2 group">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white">
-            <Store className="h-4 w-4" />
-          </span>
+        <Link to="/" data-testid="nav-logo" className="flex items-center gap-3 group">
+          <img
+            src="/assets/logo.png"
+            alt="Toko Lawanglimo"
+            className="h-10 w-10 object-contain"
+          />
           <div className="leading-tight">
-            <div className="font-heading text-lg font-bold tracking-tight">
+            <div className="font-heading text-lg font-bold tracking-tight text-[#1A2F5A]">
               {STORE_INFO.name}
             </div>
             <div className="text-[10px] uppercase tracking-widest text-[#4A5568]">
-              Belanja Tanpa Repot
+              Alat Rumah Tangga
             </div>
           </div>
         </Link>
