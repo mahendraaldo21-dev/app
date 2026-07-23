@@ -76,6 +76,11 @@ class RecoveryResetRequest(BaseModel):
     recovery_key: str
     new_password: str
 
+class ProductVariant(BaseModel):
+    name: str
+    price: float
+    stock: int = 0
+
 class ProductIn(BaseModel):
     name: str
     description: str = ""
@@ -83,6 +88,8 @@ class ProductIn(BaseModel):
     category: str = ""
     image_url: str = ""
     stock: int = 0
+    variant_label: str = ""
+    variants: List[ProductVariant] = []
 
 class CategoryIn(BaseModel):
     name: str

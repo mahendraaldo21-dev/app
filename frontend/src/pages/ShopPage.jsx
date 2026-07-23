@@ -4,7 +4,10 @@ import { api, formatRupiah, resolveImageUrl } from "@/lib/api";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ShoppingCart, Tag, Zap } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+} from "@/components/ui/dialog";
+import { Search, ShoppingCart, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ShopPage() {
@@ -12,6 +15,7 @@ export default function ShopPage() {
   const [categories, setCategories] = useState([]);
   const [activeCat, setActiveCat] = useState("");
   const [query, setQuery] = useState("");
+  const [variantPicker, setVariantPicker] = useState(null); // { product, action: 'cart'|'buy' }
   const { addItem } = useCart();
   const navigate = useNavigate();
 
@@ -28,14 +32,37 @@ export default function ShopPage() {
     });
   }, [products, activeCat, query]);
 
+  const hasVariants = (p) => Array.isArray(p.variants) && p.variants.length > 0;
+
+  const doAdd = (p, variant = null) => {
+    addItem(p, 1, variant);
+    toast.success(
+      `${p.name}${variant ? ` (${variant.name})` : ""} ditambahkan ke keranjang`
+    );
+  };
+
   const handleAdd = (p) => {
-    addItem(p, 1);
-    toast.success(`${p.name} ditambahkan ke keranjang`);
+    if (hasVariants(p)) {
+      setVariantPicker({ product: p, action: "cart" });
+    } else {
+      doAdd(p);
+    }
   };
 
   const handleBuyNow = (p) => {
-    addItem(p, 1);
-    navigate("/cart");
+    if (hasVariants(p)) {
+      setVariantPicker({ product: p, action: "buy" });
+    } else {
+      addItem(p, 1);
+      navigate("/cart");
+    }
+  };
+
+  const onVariantConfirm = (variant) => {
+    const { product, action } = variantPicker;
+    doAdd(product, variant);
+    setVariantPicker(null);
+    if (action === "buy") navigate("/cart");
   };
 
   return (
@@ -109,12 +136,25 @@ export default function ShopPage() {
           ))}
         </div>
       )}
+
+      {/* Variant picker dialog */}
+      <VariantPickerDialog
+        state={variantPicker}
+        onClose={() => setVariantPicker(null)}
+        onConfirm={onVariantConfirm}
+      />
     </div>
   );
 }
 
 function ProductCard({ product, onAdd, onBuy }) {
-  const hasDiscount = product.discount_percent && product.discount_percent > 0;
+  const variants = Array.isArray(product.variants) ? product.variants : [];
+  const hasVariants = variants.length > 0;
+  const prices = variants.map((v) => v.price);
+  const minPrice = hasVariants ? Math.min(...prices) : product.price;
+  const maxPrice = hasVariants ? Math.max(...prices) : product.price;
+  const showRange = hasVariants && minPrice !== maxPrice;
+
   return (
     <div
       data-testid={`product-card-${product.id}`}
@@ -132,13 +172,9 @@ function ProductCard({ product, onAdd, onBuy }) {
             Tanpa Gambar
           </div>
         )}
-        {hasDiscount && (
-          <span
-            data-testid={`discount-badge-${product.id}`}
-            className="absolute top-3 left-3 inline-flex items-center gap-1 bg-discount text-white text-[11px] font-bold px-2.5 py-1 rounded-full"
-          >
-            <Tag className="h-3 w-3" />
-            Diskon {product.discount_percent}%
+        {hasVariants && (
+          <span className="absolute top-3 left-3 inline-flex items-center gap-1 bg-[#1A202C] text-white text-[10px] font-semibold px-2 py-1 rounded-full">
+            {variants.length} {product.variant_label || "varian"}
           </span>
         )}
       </div>
@@ -153,7 +189,14 @@ function ProductCard({ product, onAdd, onBuy }) {
           {product.description}
         </p>
         <div className="mt-3 font-heading text-lg font-bold text-[#1A202C]">
-          {formatRupiah(product.price)}
+          {showRange ? (
+            <>
+              {formatRupiah(minPrice)}{" "}
+              <span className="text-sm font-medium text-[#4A5568]">– {formatRupiah(maxPrice)}</span>
+            </>
+          ) : (
+            formatRupiah(minPrice)
+          )}
         </div>
         <div className="mt-auto pt-3 flex gap-2">
           <Button
@@ -176,5 +219,91 @@ function ProductCard({ product, onAdd, onBuy }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function VariantPickerDialog({ state, onClose, onConfirm }) {
+  const [selected, setSelected] = useState(null);
+
+  useEffect(() => {
+    setSelected(null);
+  }, [state]);
+
+  if (!state) return null;
+  const { product, action } = state;
+  const variants = product.variants || [];
+  const label = product.variant_label || "Varian";
+
+  const confirm = () => {
+    if (!selected) {
+      toast.error(`Pilih ${label.toLowerCase()} dulu`);
+      return;
+    }
+    if ((selected.stock ?? 0) <= 0) {
+      toast.error(`${label} ${selected.name} sedang habis`);
+      return;
+    }
+    onConfirm(selected);
+  };
+
+  return (
+    <Dialog open={!!state} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent data-testid="variant-picker-dialog" className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>{product.name}</DialogTitle>
+          <DialogDescription>
+            Pilih {label.toLowerCase()} sebelum {action === "buy" ? "membeli" : "menambahkan ke keranjang"}.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="mt-2">
+          <div className="text-xs uppercase tracking-widest text-[#4A5568] mb-3">{label}</div>
+          <div className="flex flex-wrap gap-2">
+            {variants.map((v, i) => {
+              const active = selected?.name === v.name;
+              const out = (v.stock ?? 0) <= 0;
+              return (
+                <button
+                  key={i}
+                  data-testid={`variant-option-${v.name}`}
+                  disabled={out}
+                  onClick={() => setSelected(v)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                    out
+                      ? "bg-[#F3F1EC] text-[#4A5568]/50 border-[#E2E8F0] line-through cursor-not-allowed"
+                      : active
+                      ? "bg-brand text-white border-brand"
+                      : "bg-white text-[#1A202C] border-[#E2E8F0] hover:border-[#1A202C]"
+                  }`}
+                >
+                  {v.name}
+                  {out && <span className="ml-1 text-[10px]">(habis)</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {selected && (
+          <div className="mt-4 rounded-2xl border border-[#E2E8F0] bg-[#FAF9F6] p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#4A5568]">{label}: <strong className="text-[#1A202C]">{selected.name}</strong></span>
+              <span className="font-heading font-bold text-lg">{formatRupiah(selected.price)}</span>
+            </div>
+            <div className="mt-1 text-xs text-[#4A5568]">Stok: {selected.stock ?? 0}</div>
+          </div>
+        )}
+
+        <div className="mt-4">
+          <Button
+            data-testid="variant-confirm-btn"
+            onClick={confirm}
+            className="w-full h-11 rounded-full bg-brand hover:bg-[#C9302C] text-white"
+          >
+            {action === "buy" ? "Beli Sekarang" : "Tambah ke Keranjang"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

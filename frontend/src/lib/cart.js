@@ -13,6 +13,10 @@ const loadInitial = () => {
   }
 };
 
+// Compose unique cart-line id from product id + variant name (if any)
+const lineId = (productId, variantName) =>
+  variantName ? `${productId}::${variantName}` : productId;
+
 export const CartProvider = ({ children }) => {
   const [items, setItems] = useState(loadInitial);
 
@@ -24,9 +28,13 @@ export const CartProvider = ({ children }) => {
     }
   }, [items]);
 
-  const addItem = (product, qty = 1) => {
+  const addItem = (product, qty = 1, variant = null) => {
+    // variant: { name, price, stock } | null
+    const price = variant ? variant.price : product.price;
+    const variantName = variant ? variant.name : null;
+    const id = lineId(product.id, variantName);
     setItems((prev) => {
-      const idx = prev.findIndex((p) => p.id === product.id);
+      const idx = prev.findIndex((p) => p.id === id);
       if (idx >= 0) {
         const next = [...prev];
         next[idx] = { ...next[idx], qty: next[idx].qty + qty };
@@ -35,9 +43,12 @@ export const CartProvider = ({ children }) => {
       return [
         ...prev,
         {
-          id: product.id,
+          id,
+          product_id: product.id,
           name: product.name,
-          price: product.price,
+          variant_name: variantName,
+          variant_label: product.variant_label || null,
+          price,
           image_url: product.image_url,
           qty,
         },

@@ -143,12 +143,13 @@ function ProductsTab() {
               <TableHead>Kategori</TableHead>
               <TableHead>Harga</TableHead>
               <TableHead>Stok</TableHead>
+              <TableHead>Varian</TableHead>
               <TableHead className="text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {products.length === 0 && (
-              <TableRow><TableCell colSpan={6} className="text-center py-10 text-[#4A5568]">Belum ada produk.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={7} className="text-center py-10 text-[#4A5568]">Belum ada produk.</TableCell></TableRow>
             )}
             {products.map((p) => (
               <TableRow key={p.id} data-testid={`admin-product-row-${p.id}`}>
@@ -161,6 +162,11 @@ function ProductsTab() {
                 <TableCell>{p.category || "-"}</TableCell>
                 <TableCell>{formatRupiah(p.price)}</TableCell>
                 <TableCell>{p.stock ?? 0}</TableCell>
+                <TableCell>
+                  {Array.isArray(p.variants) && p.variants.length > 0
+                    ? `${p.variants.length} · ${p.variant_label || "varian"}`
+                    : "-"}
+                </TableCell>
                 <TableCell className="text-right">
                   <Button
                     data-testid={`edit-product-${p.id}`}
@@ -194,11 +200,29 @@ function ProductForm({ initial, categories, onDone }) {
     category: initial?.category || "",
     image_url: initial?.image_url || "",
     stock: initial?.stock ?? 0,
+    variant_label: initial?.variant_label || "",
+    variants: Array.isArray(initial?.variants) ? initial.variants : [],
   });
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
 
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  const addVariant = () =>
+    setForm((f) => ({
+      ...f,
+      variants: [...f.variants, { name: "", price: f.price || 0, stock: 0 }],
+    }));
+
+  const updateVariant = (i, k, v) =>
+    setForm((f) => {
+      const next = [...f.variants];
+      next[i] = { ...next[i], [k]: v };
+      return { ...f, variants: next };
+    });
+
+  const removeVariant = (i) =>
+    setForm((f) => ({ ...f, variants: f.variants.filter((_, idx) => idx !== i) }));
 
   const upload = async (e) => {
     const file = e.target.files?.[0];
@@ -221,10 +245,33 @@ function ProductForm({ initial, categories, onDone }) {
 
   const submit = async (e) => {
     e.preventDefault();
+    // Validate variants
+    const cleaned = form.variants
+      .filter((v) => (v.name || "").trim() !== "")
+      .map((v) => ({
+        name: v.name.trim(),
+        price: parseFloat(v.price) || 0,
+        stock: parseInt(v.stock, 10) || 0,
+      }));
+    if (cleaned.length > 0 && !form.variant_label.trim()) {
+      toast.error("Isi label varian dulu (contoh: Ukuran, Warna)");
+      return;
+    }
+    // Ensure unique variant names
+    const names = cleaned.map((v) => v.name.toLowerCase());
+    if (new Set(names).size !== names.length) {
+      toast.error("Nama varian tidak boleh duplikat");
+      return;
+    }
     const payload = {
-      ...form,
+      name: form.name,
+      description: form.description,
       price: parseFloat(form.price) || 0,
+      category: form.category,
+      image_url: form.image_url,
       stock: parseInt(form.stock, 10) || 0,
+      variant_label: cleaned.length > 0 ? form.variant_label.trim() : "",
+      variants: cleaned,
     };
     try {
       if (initial?.id) {
@@ -289,6 +336,93 @@ function ProductForm({ initial, categories, onDone }) {
               {uploading ? "Mengunggah…" : "Unggah Gambar"}
             </Button>
           </div>
+        </div>
+
+        {/* Variants section */}
+        <div className="col-span-2 border-t pt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs uppercase tracking-widest text-[#4A5568]">Varian (Opsional)</div>
+              <p className="text-[11px] text-[#4A5568] mt-1">
+                Kalau produk punya pilihan (ukuran, warna, dll.), tambah varian di sini.
+                Kalau tidak, biarkan kosong dan pakai harga/stok utama di atas.
+              </p>
+            </div>
+          </div>
+
+          {form.variants.length > 0 && (
+            <div className="mt-3">
+              <Label>Label Varian</Label>
+              <Input
+                data-testid="form-variant-label"
+                placeholder="contoh: Ukuran, Warna, Kapasitas, Motif"
+                value={form.variant_label}
+                onChange={(e) => change("variant_label", e.target.value)}
+                className="mt-1"
+              />
+            </div>
+          )}
+
+          <div className="mt-3 space-y-2">
+            {form.variants.map((v, i) => (
+              <div
+                key={i}
+                data-testid={`variant-row-${i}`}
+                className="grid grid-cols-[1.5fr_1fr_0.8fr_auto] gap-2 items-end"
+              >
+                <div>
+                  {i === 0 && <Label className="text-[11px]">Nama</Label>}
+                  <Input
+                    data-testid={`form-variant-name-${i}`}
+                    placeholder="contoh: S / Merah / 500ml"
+                    value={v.name}
+                    onChange={(e) => updateVariant(i, "name", e.target.value)}
+                  />
+                </div>
+                <div>
+                  {i === 0 && <Label className="text-[11px]">Harga (Rp)</Label>}
+                  <Input
+                    data-testid={`form-variant-price-${i}`}
+                    type="number"
+                    min="0"
+                    value={v.price}
+                    onChange={(e) => updateVariant(i, "price", e.target.value)}
+                  />
+                </div>
+                <div>
+                  {i === 0 && <Label className="text-[11px]">Stok</Label>}
+                  <Input
+                    data-testid={`form-variant-stock-${i}`}
+                    type="number"
+                    min="0"
+                    value={v.stock}
+                    onChange={(e) => updateVariant(i, "stock", e.target.value)}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  data-testid={`remove-variant-${i}`}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeVariant(i)}
+                  className="h-9"
+                >
+                  <Trash2 className="h-4 w-4 text-brand" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          <Button
+            type="button"
+            data-testid="add-variant-btn"
+            onClick={addVariant}
+            variant="outline"
+            size="sm"
+            className="mt-3 rounded-full"
+          >
+            <Plus className="h-3.5 w-3.5 mr-1" /> Tambah Varian
+          </Button>
         </div>
       </div>
       <DialogFooter>

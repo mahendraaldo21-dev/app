@@ -41,7 +41,8 @@ export default function CartPage() {
   const buildWaMessage = () => {
     let msg = `Halo ${STORE_INFO.name}! Saya ingin memesan:\n\n`;
     items.forEach((it, i) => {
-      msg += `${i + 1}. ${it.name} x${it.qty} — ${formatRupiah(it.price * it.qty)}\n`;
+      const variantText = it.variant_name ? ` [${it.variant_label || "Varian"}: ${it.variant_name}]` : "";
+      msg += `${i + 1}. ${it.name}${variantText} x${it.qty} — ${formatRupiah(it.price * it.qty)}\n`;
     });
     msg += `\nSubtotal: ${formatRupiah(subtotal)}`;
     if (appliedDiscount) {
@@ -93,6 +94,11 @@ export default function CartPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-[#1A202C] line-clamp-1">{it.name}</h3>
+                {it.variant_name && (
+                  <div className="mt-0.5 text-xs text-[#4A5568]">
+                    {it.variant_label || "Varian"}: <span className="font-medium text-[#1A202C]">{it.variant_name}</span>
+                  </div>
+                )}
                 <div className="mt-1 font-heading font-bold">{formatRupiah(it.price)}</div>
                 <div className="mt-2 flex items-center gap-2">
                   <button
