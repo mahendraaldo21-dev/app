@@ -10,6 +10,7 @@ import { CartProvider } from "@/lib/cart";
 import HomePage from "@/pages/HomePage";
 import ShopPage from "@/pages/ShopPage";
 import CartPage from "@/pages/CartPage";
+import DownloadPage from "@/pages/DownloadPage";
 import AdminLoginPage from "@/pages/AdminLoginPage";
 import AdminPage from "@/pages/AdminPage";
 import RecoveryResetPage from "@/pages/RecoveryResetPage";
@@ -25,6 +26,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/cart" element={<CartPage />} />
+              <Route path="/download" element={<DownloadPage />} />
               <Route path="/admin/login" element={<AdminLoginPage />} />
               <Route path="/admin/recovery" element={<RecoveryResetPage />} />
               <Route path="/admin" element={<AdminPage />} />

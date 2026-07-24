@@ -39,6 +39,11 @@ export default function Navbar() {
           }>
             Belanja
           </NavLink>
+          <NavLink to="/download" data-testid="nav-download" className={({ isActive }) =>
+            `transition-colors ${isActive ? "text-brand" : "text-[#1A202C] hover:text-brand"}`
+          }>
+            Download
+          </NavLink>
         </nav>
 
         <Link
