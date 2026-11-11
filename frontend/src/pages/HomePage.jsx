@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import HeroCarousel from "@/components/HeroCarousel";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MapPin, Sparkles, ShieldCheck, Truck } from "lucide-react";
+import { ArrowRight, MapPin, Sparkles, ShieldCheck, Truck, Download } from "lucide-react";
 import { STORE_INFO, api } from "@/lib/api";
 
 export default function HomePage() {
@@ -55,7 +55,19 @@ export default function HomePage() {
                   Hubungi via WhatsApp
                 </Button>
               </a>
+              <Link to="/download">
+  <Button
+    data-testid="download-btn"
+    variant="outline"
+    size="lg"
+    className="rounded-full h-12 border-[#E2E8F0] hover:border-[#1A202C]"
+  >
+    <Download className="mr-2 h-4 w-4" />
+    Download Aplikasi Android
+  </Button>
+</Link>
             </div>
+            
 
             <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
               {[
