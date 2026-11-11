@@ -35,8 +35,8 @@ export default function DownloadPage() {
 
         <div className="mt-6">
           <a
-            href="/assets/lawanglimo.apk"
-            download="lawanglimo.apk"
+            href="/assets/lawanglimo1.1.apk"
+            download="lawanglimo1.1.apk"
             data-testid="download-apk-btn"
           >
             <Button
@@ -48,7 +48,7 @@ export default function DownloadPage() {
             </Button>
           </a>
           <p className="mt-3 text-xs text-[#4A5568]">
-            Ukuran file ~7,3 MB · Android 6.0 atau lebih baru
+            Ukuran file ~9,48 MB · Android 6.0 atau lebih baru
           </p>
         </div>
 
@@ -71,7 +71,7 @@ export default function DownloadPage() {
       <div className="mt-10">
         <h2 className="font-heading text-xl font-semibold">Cara Install</h2>
         <ol className="mt-3 space-y-2 text-sm text-[#4A5568] list-decimal pl-5">
-          <li>Klik tombol <strong>Unduh APK Lawanglimo</strong> di atas.</li>
+          <li>Klik tombol <strong>Unduh APK Lawanglimo1.1</strong> di atas.</li>
           <li>Buka file APK yang sudah terunduh di HP Anda.</li>
           <li>
             Jika muncul peringatan, pilih <strong>Izinkan / Install anyway</strong>
