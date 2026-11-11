@@ -185,7 +185,7 @@ function ProductCard({ product, onAdd, onBuy }) {
         <h3 className="mt-1 font-heading text-base font-semibold leading-snug line-clamp-2 text-[#1A202C]">
           {product.name}
         </h3>
-        <p className="mt-1 text-xs text-[#4A5568] line-clamp-2">
+        <p className="mt-1 text-xs text-[#4A5568]">
           {product.description}
         </p>
         <div className="mt-3 font-heading text-lg font-bold text-[#1A202C]">
@@ -198,13 +198,13 @@ function ProductCard({ product, onAdd, onBuy }) {
             formatRupiah(minPrice)
           )}
         </div>
-        <div className="mt-auto pt-3 flex gap-2">
+        <div className="mt-auto pt-3 flex flex-col sm:flex-row gap-2">
           <Button
             data-testid={`add-cart-btn-${product.id}`}
             onClick={onAdd}
             variant="outline"
             size="sm"
-            className="rounded-full flex-1 border-[#E2E8F0] hover:border-[#1A202C]"
+            className="rounded-full w-full sm:flex-1 border-[#E2E8F0] hover:border-[#1A202C]"
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1" /> Keranjang
           </Button>
@@ -212,7 +212,7 @@ function ProductCard({ product, onAdd, onBuy }) {
             data-testid={`buy-now-btn-${product.id}`}
             onClick={onBuy}
             size="sm"
-            className="rounded-full flex-1 bg-brand hover:bg-[#C9302C] text-white"
+            className="rounded-full w-full sm:flex-1 bg-brand hover:bg-[#172554] text-white"
           >
             <Zap className="h-3.5 w-3.5 mr-1" /> Beli
           </Button>
