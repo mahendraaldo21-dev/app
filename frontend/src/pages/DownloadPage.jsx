@@ -1,7 +1,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Download, ShieldCheck, Info, Smartphone } from "lucide-react";
+import { Download, Info, Smartphone } from "lucide-react";
 import { STORE_INFO } from "@/lib/api";
+
+// Opsional: isi dengan kode SHA-256 file APK agar pengunjung bisa memeriksa keasliannya.
+// Kosongkan ("") kalau belum ada, bagian ini otomatis tidak tampil.
+const APK_SHA256 = "";
 
 export default function DownloadPage() {
   return (
@@ -17,23 +21,14 @@ export default function DownloadPage() {
           Unduh Aplikasi {STORE_INFO.name}
         </h1>
         <p className="mt-4 text-[#4A5568] leading-relaxed max-w-xl mx-auto">
-          Belanja lebih cepat dan praktis lewat aplikasi Android resmi kami.
+          Aplikasi Android untuk belanja di {STORE_INFO.name}. Kalau tidak ingin memasang
+          aplikasi, Anda tetap bisa belanja langsung lewat website ini.
         </p>
       </div>
 
-      {/* Safe banner + download card */}
+      {/* Download card */}
       <div className="mt-10 rounded-3xl border border-[#E2E8F0] bg-white soft-shadow p-6 sm:p-10 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full bg-green-50 border border-green-200 px-4 py-1.5">
-          <ShieldCheck className="h-4 w-4 text-green-700" />
-          <span
-            data-testid="apk-safe-text"
-            className="font-bold text-green-800 text-sm sm:text-base"
-          >
-            apk ini sangat AMAN!!
-          </span>
-        </div>
-
-        <div className="mt-6">
+        <div>
           <a
             href="/assets/lawanglimo-1.1.apk"
             download="lawanglimo-1.1.apk"
@@ -41,7 +36,7 @@ export default function DownloadPage() {
           >
             <Button
               size="lg"
-              className="rounded-full h-14 px-8 bg-brand hover:bg-[#C9302C] text-white text-base font-semibold soft-shadow"
+              className="rounded-full h-14 px-8 bg-brand hover:bg-[#172554] text-white text-base font-semibold soft-shadow"
             >
               <Download className="h-5 w-5 mr-2" />
               Unduh APK Lawanglimo 1.1
@@ -49,6 +44,9 @@ export default function DownloadPage() {
           </a>
           <p className="mt-3 text-xs text-[#4A5568]">
             Ukuran file ~9,48 MB · Android 6.0 atau lebih baru
+          </p>
+          <p className="mt-1 text-xs text-[#4A5568]">
+            Unduh hanya dari website resmi ini.
           </p>
         </div>
 
@@ -58,28 +56,58 @@ export default function DownloadPage() {
         >
           <div className="flex gap-3">
             <Info className="h-5 w-5 text-[#4A5568] flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-[#4A5568] leading-relaxed">
-              APK ini <strong>belum terverifikasi</strong> karena butuh waktu dan
-              persetujuan dari Google Play Store. Anda bisa tetap menginstalnya
-              dengan aman langsung dari sini.
-            </p>
+            <div className="text-sm text-[#4A5568] leading-relaxed">
+              <p className="font-semibold text-[#1A202C]">Tentang peringatan keamanan</p>
+              <p className="mt-1">
+                Aplikasi ini dibagikan di luar Google Play Store dan belum terdaftar di
+                Google. Karena itu, Android atau Play Protect bisa menampilkan peringatan
+                seperti "aplikasi tidak dikenal", atau bahkan menghentikan pemasangan.
+                Itu adalah perilaku normal untuk aplikasi seperti ini. Pasang hanya jika
+                Anda mempercayai sumbernya, dan Anda bisa tetap berbelanja lewat website
+                tanpa memasang aplikasi.
+              </p>
+            </div>
           </div>
         </div>
+
+        {APK_SHA256 && (
+          <div data-testid="apk-sha256" className="mt-6 mx-auto max-w-lg text-left">
+            <div className="text-xs uppercase tracking-widest text-[#4A5568]">
+              Sidik jari file (SHA-256)
+            </div>
+            <p className="mt-1 break-all rounded-xl bg-[#FAF9F6] border border-[#E2E8F0] px-3 py-2 font-mono text-[11px] text-[#1A202C]">
+              {APK_SHA256}
+            </p>
+            <p className="mt-1 text-[11px] text-[#4A5568]">
+              Bagi yang paham teknis, bandingkan dengan kode SHA-256 file yang Anda unduh.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Install instructions */}
       <div className="mt-10">
         <h2 className="font-heading text-xl font-semibold">Cara Install</h2>
         <ol className="mt-3 space-y-2 text-sm text-[#4A5568] list-decimal pl-5">
-          <li>Klik tombol <strong>Unduh APK Lawanglimo1.1</strong> di atas.</li>
+          <li>Klik tombol <strong>Unduh APK Lawanglimo</strong> di atas.</li>
           <li>Buka file APK yang sudah terunduh di HP Anda.</li>
           <li>
-            Jika muncul peringatan, pilih <strong>Izinkan / Install anyway</strong>
-            (Android akan meminta izin instal dari sumber tidak dikenal — ini normal
-            untuk aplikasi di luar Play Store).
+            Jika Android meminta izin instal dari sumber tidak dikenal atau menampilkan
+            peringatan, baca pesannya dengan teliti, lalu lanjutkan hanya jika Anda yakin.
+            Pada sebagian HP, pemasangan bisa diblokir sepenuhnya.
           </li>
-          <li>Selesai! Buka aplikasi Lawanglimo dan mulai belanja.</li>
+          <li>Selesai. Buka aplikasi Lawanglimo dan mulai belanja.</li>
         </ol>
+      </div>
+
+      {/* Alternative */}
+      <div className="mt-8 rounded-2xl bg-[#FAF9F6] border border-[#E2E8F0] p-4">
+        <h3 className="font-semibold text-sm text-[#1A202C]">Tidak ingin memasang APK?</h3>
+        <p className="mt-1 text-sm text-[#4A5568] leading-relaxed">
+          Buka <strong>lawanglimo.shop</strong> di Chrome, ketuk menu titik tiga di kanan
+          atas, lalu pilih <strong>Tambahkan ke layar utama</strong>. Pintasan toko akan
+          muncul di HP Anda tanpa perlu memasang file apa pun.
+        </p>
       </div>
     </div>
   );
