@@ -86,7 +86,7 @@ export default function HomePage() {
               Kunjungi Toko Kami
             </div>
             <h2 className="font-heading text-3xl sm:text-4xl font-semibold tracking-tight mt-3">
-              Sambangi langsung <span className="text-brand">{STORE_INFO.name}</span>
+              Kunjungi langsung <span className="text-brand">{STORE_INFO.name}</span>
             </h2>
             <p className="mt-4 text-[#4A5568] leading-relaxed">
               Belanja online praktis, atau datang langsung ke toko offline kami untuk pengalaman belanja yang lebih personal.
