@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { api } from "@/lib/api";
+import { api, resolveImageUrl } from "@/lib/api";
 
 export default function HeroCarousel() {
   const [slides, setSlides] = useState([]);
@@ -41,7 +41,7 @@ export default function HeroCarousel() {
               className="relative flex-[0_0_100%] aspect-[16/8] sm:aspect-[16/7]"
             >
               <img
-                src={src}
+                src={resolveImageUrl(src)}
                 alt={`Slide ${i + 1}`}
                 className="w-full h-full object-cover"
               />
