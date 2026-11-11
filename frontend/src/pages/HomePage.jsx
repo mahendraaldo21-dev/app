@@ -31,7 +31,7 @@ export default function HomePage() {
               Alat rumah tangga <span className="text-brand">berkualitas</span>, tanpa repot.
             </h1>
             <p className="mt-5 text-base sm:text-lg text-[#4A5568] max-w-xl leading-relaxed">
-              Selamat datang di <strong>{STORE_INFO.name}</strong>. Pilih barangmu,
+              Selamat datang di <strong>{STORE_INFO.name}</strong>. Ambarawa, Pilih barangmu,
               gunakan kode kupon, lalu checkout langsung via WhatsApp.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
