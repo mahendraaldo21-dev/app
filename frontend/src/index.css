@@ -8,7 +8,7 @@
   --bg: #FAF9F6;
   --surface: #FFFFFF;
   --surface-muted: #F3F1EC;
-  --primary: #D9534F;
+  --primary: #1E3A8A;
   --primary-hover: #172554;
   --secondary: #2D3748;
   --text-main: #1A202C;
@@ -40,7 +40,7 @@ h1, h2, h3, h4, h5, .font-heading {
     --card-foreground: 220 18% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 18% 11%;
-    --primary: 2 62% 58%;
+    --primary: 224 64% 33%;
     --primary-foreground: 0 0% 100%;
     --secondary: 215 22% 23%;
     --secondary-foreground: 0 0% 100%;
@@ -52,7 +52,7 @@ h1, h2, h3, h4, h5, .font-heading {
     --destructive-foreground: 0 0% 100%;
     --border: 214 24% 90%;
     --input: 214 24% 90%;
-    --ring: 2 62% 58%;
+    --ring: 224 64% 33%;
     --radius: 0.75rem;
   }
 }
