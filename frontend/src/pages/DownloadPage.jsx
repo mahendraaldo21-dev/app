@@ -35,8 +35,8 @@ export default function DownloadPage() {
 
         <div className="mt-6">
           <a
-            href="/assets/lawanglimo1.1.apk"
-            download="lawanglimo1.1.apk"
+            href="/assets/lawanglimo-1.1.apk"
+            download="lawanglimo-1.1.apk"
             data-testid="download-apk-btn"
           >
             <Button
@@ -44,7 +44,7 @@ export default function DownloadPage() {
               className="rounded-full h-14 px-8 bg-brand hover:bg-[#C9302C] text-white text-base font-semibold soft-shadow"
             >
               <Download className="h-5 w-5 mr-2" />
-              Unduh APK Lawanglimo
+              Unduh APK Lawanglimo 1.1
             </Button>
           </a>
           <p className="mt-3 text-xs text-[#4A5568]">
