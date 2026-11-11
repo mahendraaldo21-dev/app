@@ -4,7 +4,7 @@ import { useCart } from "@/lib/cart";
 import { api, formatRupiah, resolveImageUrl, STORE_INFO } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Minus, Plus, Trash2, MessageCircle, BadgePercent, ShoppingBag } from "lucide-react";
+import { Minus, Plus, Trash2, MessageCircle, BadgePercent, ShoppingBag, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 export default function CartPage() {
@@ -12,6 +12,9 @@ export default function CartPage() {
   const [discountCode, setDiscountCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(null); // {code, discount_percent}
   const [checking, setChecking] = useState(false);
+  const [deliveryMethod, setDeliveryMethod] = useState("pickup"); // "pickup" atau "delivery"
+  const [customerName, setCustomerName] = useState("");
+  const [address, setAddress] = useState("");
 
   const discountAmount = appliedDiscount
     ? (subtotal * (appliedDiscount.discount_percent || 0)) / 100
@@ -49,12 +52,24 @@ export default function CartPage() {
       msg += `\nKupon: ${appliedDiscount.code} (${appliedDiscount.discount_percent}%)`;
       msg += `\nPotongan: -${formatRupiah(discountAmount)}`;
     }
-    msg += `\nTotal: ${formatRupiah(total)}\n\nMohon info ketersediaan & pengirimannya, terima kasih!`;
+    msg += `\nTotal: ${formatRupiah(total)}\n`;
+if (deliveryMethod === "delivery") {
+  msg += `\nPengiriman: Diantar`;
+  msg += `\nNama: ${customerName.trim()}`;
+  msg += `\nAlamat: ${address.trim()}`;
+} else {
+  msg += `\nPengiriman: Ambil di toko`;
+  if (customerName.trim()) msg += `\nNama: ${customerName.trim()}`;
+}
+  msg += `\n\nMohon info ketersediaannya, terima kasih!`;
     return msg;
   };
-
-  const checkout = () => {
+    const checkout = () => {
     if (items.length === 0) return;
+    if (deliveryMethod === "delivery" && (!customerName.trim() || !address.trim())) {
+      toast.error("Isi nama dan alamat pengiriman dulu");
+      return;
+    }
     const url = `https://wa.me/${STORE_INFO.phone_wa}?text=${encodeURIComponent(buildWaMessage())}`;
     window.open(url, "_blank");
   };
@@ -66,7 +81,7 @@ export default function CartPage() {
         <h2 className="font-heading text-3xl font-semibold mt-4">Keranjang masih kosong</h2>
         <p className="mt-2 text-[#4A5568]">Yuk pilih barang dulu sebelum checkout.</p>
         <Link to="/shop">
-          <Button data-testid="empty-cart-shop-btn" className="mt-6 rounded-full bg-brand hover:bg-[#C9302C] text-white">
+          <Button data-testid="empty-cart-shop-btn" className="mt-6 rounded-full bg-brand hover:bg-[#172554] text-white">
             Mulai Belanja
           </Button>
         </Link>
@@ -193,7 +208,60 @@ export default function CartPage() {
               <span data-testid="summary-total" className="font-heading font-bold text-lg">{formatRupiah(total)}</span>
             </div>
           </div>
-
+<div className="mt-6">
+  <label className="text-xs uppercase tracking-widest text-[#4A5568] flex items-center gap-1.5">
+    <Truck className="h-3.5 w-3.5" />
+    Pengambilan Barang
+  </label>
+  <div className="mt-2 grid grid-cols-2 gap-2">
+    <button
+      type="button"
+      data-testid="delivery-pickup-btn"
+      onClick={() => setDeliveryMethod("pickup")}
+      className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+        deliveryMethod === "pickup"
+          ? "bg-brand text-white border-transparent"
+          : "border-[#E2E8F0] text-[#1A202C] hover:border-[#1A202C]"
+      }`}
+    >
+      Ambil di toko
+    </button>
+    <button
+      type="button"
+      data-testid="delivery-send-btn"
+      onClick={() => setDeliveryMethod("delivery")}
+      className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+        deliveryMethod === "delivery"
+          ? "bg-brand text-white border-transparent"
+          : "border-[#E2E8F0] text-[#1A202C] hover:border-[#1A202C]"
+      }`}
+    >
+      Diantar
+    </button>
+  </div>
+  <Input
+    data-testid="customer-name-input"
+    placeholder={deliveryMethod === "delivery" ? "Nama penerima" : "Nama (opsional)"}
+    value={customerName}
+    onChange={(e) => setCustomerName(e.target.value)}
+    className="mt-3 rounded-full bg-[#FAF9F6] border-[#E2E8F0]"
+  />
+  {deliveryMethod === "delivery" && (
+    <>
+      <textarea
+        data-testid="address-input"
+        placeholder="Alamat lengkap pengiriman"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        rows={3}
+        className="mt-3 w-full rounded-2xl bg-[#FAF9F6] border border-[#E2E8F0] px-4 py-3 text-sm outline-none focus:border-[#1A202C]"
+      />
+      <p className="mt-1 text-[11px] text-[#4A5568]">
+        Ongkos kirim akan dikonfirmasi admin lewat WhatsApp.
+      </p>
+    </>
+  )}
+</div>
           <Button
             data-testid="checkout-wa-btn"
             onClick={checkout}
