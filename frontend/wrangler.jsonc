@@ -4,5 +4,9 @@
   "assets": {
     "directory": "./build",
     "not_found_handling": "single-page-application"
-  }
+  },
+  "routes": [
+    { "pattern": "lawanglimo.shop", "custom_domain": true },
+    { "pattern": "www.lawanglimo.shop", "custom_domain": true }
+  ]
 }
