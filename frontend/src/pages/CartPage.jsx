@@ -258,6 +258,15 @@ if (deliveryMethod === "delivery") {
       />
       <p className="mt-1 text-[11px] text-[#4A5568]">
         Ongkos kirim akan dikonfirmasi admin lewat WhatsApp.
+        <a
+        href="/kalkulator-ongkir.html"
+        target="_blank"
+        rel="noreferrer"
+        data-testid="ongkir-calc-link"
+        className="mt-2 inline-block text-xs font-medium text-brand underline underline-offset-2"
+>
+        Hitung perkiraan ongkir
+        </a>
       </p>
     </>
   )}
