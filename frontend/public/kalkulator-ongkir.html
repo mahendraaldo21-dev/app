@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1E3A8A">
+<meta name="robots" content="noindex">
+<title>Perkiraan Ongkir | Toko Lawanglimo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF9F6;
+  --surface:#FFFFFF;
+  --navy:#1E3A8A;
+  --navy-deep:#172554;
+  --ink:#1A202C;
+  --muted:#4A5568;
+  --line:#E2E8F0;
+  --tint:#EEF2FB;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font:16px/1.55 'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:460px;margin:0 auto;padding:24px 16px 40px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.mark{
+  width:36px;height:36px;border:2px solid var(--navy);border-radius:10px;
+  display:grid;place-items:center;color:var(--navy);
+  font:700 18px/1 'Outfit',system-ui,sans-serif;
+}
+.brand-name{font:600 17px/1.2 'Outfit',system-ui,sans-serif;color:var(--ink)}
+h1{
+  font:700 clamp(28px,7vw,34px)/1.1 'Outfit',system-ui,sans-serif;
+  letter-spacing:-.01em;margin:0 0 8px;
+}
+.intro{margin:0 0 24px;color:var(--muted)}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:22px;
+}
+label{display:block;font-weight:600;margin-bottom:8px}
+.unit{position:relative}
+.unit input{
+  width:100%;
+  border:1px solid #CBD5E1;border-radius:12px;
+  padding:14px 52px 14px 14px;
+  font:inherit;font-size:18px;color:var(--ink);background:#fff;
+}
+.unit input::placeholder{color:#94A3B8}
+.unit input:focus-visible{outline:3px solid #BFD0F5;border-color:var(--navy)}
+.unit span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.hint{margin:10px 0 0;font-size:14px;color:var(--muted)}
+a{color:var(--navy)}
+a:focus-visible,button:focus-visible{outline:3px solid #BFD0F5;outline-offset:2px;border-radius:6px}
+.result{
+  margin-top:22px;
+  background:var(--navy);
+  color:#fff;
+  border-radius:16px;
+  padding:20px;
+}
+.result .caption{font-size:14px;color:#C7D5F5}
+.price{
+  font:700 clamp(36px,10vw,46px)/1.1 'Outfit',system-ui,sans-serif;
+  letter-spacing:-.01em;margin-top:4px;
+}
+.status{margin:12px 0 0;font-size:14px;color:#DCE6FB;min-height:21px}
+.status a{color:#fff;font-weight:600}
+.note{
+  margin-top:16px;
+  background:var(--tint);
+  border-radius:12px;
+  padding:14px;
+  font-size:14px;
+  color:#26385F;
+}
+.back{
+  display:inline-block;margin-top:20px;
+  font-weight:600;text-decoration:none;color:var(--navy);
+}
+.back:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">
+    <div class="mark" aria-hidden="true">L</div>
+    <div class="brand-name">Toko Lawanglimo</div>
+  </div>
+
+  <h1>Perkiraan ongkir</h1>
+  <p class="intro">Isi jarak dari toko ke alamatmu, perkiraannya langsung muncul.</p>
+
+  <section class="card">
+    <label for="distance">Jarak dari toko ke alamatmu</label>
+    <div class="unit">
+      <input id="distance" type="number" inputmode="decimal" min="0" step="0.1" placeholder="Contoh: 3" autocomplete="off">
+      <span>km</span>
+    </div>
+    <p class="hint">
+      Belum tahu jaraknya?
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Toko+mbk+ju+Lawang+Limo+Ambarawa" target="_blank" rel="noopener">Cek di Google Maps</a>,
+      lalu isi alamatmu sebagai titik awal.
+    </p>
+
+    <div class="result" aria-live="polite">
+      <div class="caption">Perkiraan ongkir</div>
+      <div class="price" id="total">&mdash;</div>
+      <p class="status" id="status">Masukkan jarak untuk melihat perkiraan.</p>
+    </div>
+
+    <div class="note">
+      Ini hanya estimasi, harga bisa berubah tergantung besar barang. Ongkir final dikonfirmasi admin lewat WhatsApp.
+    </div>
+  </section>
+
+  <a class="back" href="/cart">Kembali ke keranjang</a>
+  <noscript><p class="hint">Aktifkan JavaScript untuk memakai kalkulator ini.</p></noscript>
+</main>
+
+<script>
+/* ====== PENGATURAN TARIF ======
+   Ubah angka di bagian ini saja. Tidak ada kolom tarif yang tampil ke pembeli. */
+const FUEL_PRICE      = 16000; // harga BBM per liter (Rp)
+const KM_PER_LITER    = 43;    // konsumsi BBM motor (km per liter)
+const SERVICE_FEE     = 2000;  // jasa pengantar, ditambahkan di atas biaya BBM (Rp)
+const OPERATIONAL_FEE = 0;     // biaya operasional tambahan (Rp)
+const MIN_FEE         = 0;     // ongkir minimum (Rp)
+const ROUNDING        = 1000;  // dibulatkan ke atas ke kelipatan ini (Rp)
+const MAX_KM          = 0;     // batas jarak antar, isi 0 jika tanpa batas
+const WA_NUMBER       = "6285742364953"; // format internasional, tanpa +
+
+/* BBM dihitung untuk perjalanan pulang-pergi (jarak x 2). */
+function hitungOngkir(km) {
+  const perjalanan = km * 2;
+  const bbm = KM_PER_LITER > 0 ? (perjalanan / KM_PER_LITER) * FUEL_PRICE : 0;
+  const mentah = Math.max(bbm + SERVICE_FEE + OPERATIONAL_FEE, MIN_FEE);
+  const step = ROUNDING > 0 ? ROUNDING : 1;
+  return Math.ceil(mentah / step) * step;
+}
+
+function rupiah(n) {
+  return "Rp " + Math.round(n).toLocaleString("id-ID");
+}
+
+const inputEl = document.getElementById("distance");
+const totalEl = document.getElementById("total");
+const statusEl = document.getElementById("status");
+
+function tampilkan(teks, status, waLink) {
+  totalEl.textContent = teks;
+  statusEl.textContent = status;
+  if (waLink) {
+    const a = document.createElement("a");
+    a.href = "https://wa.me/" + WA_NUMBER;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "Hubungi admin via WhatsApp";
+    statusEl.appendChild(document.createTextNode(" "));
+    statusEl.appendChild(a);
+  }
+}
+
+function update() {
+  const km = parseFloat(String(inputEl.value).replace(",", "."));
+  if (!isFinite(km) || km <= 0) {
+    tampilkan("\u2014", "Masukkan jarak untuk melihat perkiraan.", false);
+    return;
+  }
+  if (MAX_KM > 0 && km > MAX_KM) {
+    tampilkan("\u2014", "Jarak ini di luar area antar otomatis.", true);
+    return;
+  }
+  const jarak = km.toLocaleString("id-ID", { maximumFractionDigits: 1 });
+  tampilkan(rupiah(hitungOngkir(km)), "Untuk jarak " + jarak + " km.", false);
+}
+
+inputEl.addEventListener("input", update);
+update();
+</script>
+</body>
+</html>
