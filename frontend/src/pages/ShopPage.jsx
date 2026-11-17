@@ -182,8 +182,10 @@ function ProductCard({ product, onAdd, onBuy }) {
         <div className="text-[10px] uppercase tracking-widest text-[#4A5568]">
           {product.category || "Lain-lain"}
         </div>
-        <h3 className="mt-1 font-heading text-base font-semibold leading-snug line-clamp-2 text-[#1A202C]">
-          {product.name}
+       <h3 className="mt-2 font-heading text-base font-semibold leading-[1.7] line-clamp-2 text-[#172554]">
+        <span className="rounded-md bg-[#E4EBFA] px-1.5 py-0.5 box-decoration-clone">
+         {product.name}
+          </span>
         </h3>
         <p className="mt-1 text-xs text-[#4A5568]">
           {product.description}
