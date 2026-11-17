@@ -15,6 +15,24 @@ export default function CartPage() {
   const [deliveryMethod, setDeliveryMethod] = useState("pickup"); // "pickup" atau "delivery"
   const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState("");
+  const [notes, setNotes] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem("ll_cart_notes") || "{}");
+  } catch (e) {
+    return {};
+  }
+});
+const setNote = (id, value) => {
+  setNotes((prev) => {
+    const next = { ...prev, [id]: value };
+    try {
+      localStorage.setItem("ll_cart_notes", JSON.stringify(next));
+    } catch (e) {
+      /* abaikan */
+    }
+    return next;
+  });
+};
 
   const discountAmount = appliedDiscount
     ? (subtotal * (appliedDiscount.discount_percent || 0)) / 100
@@ -46,6 +64,8 @@ export default function CartPage() {
     items.forEach((it, i) => {
       const variantText = it.variant_name ? ` [${it.variant_label || "Varian"}: ${it.variant_name}]` : "";
       msg += `${i + 1}. ${it.name}${variantText} x${it.qty} — ${formatRupiah(it.price * it.qty)}\n`;
+      const note = (notes[it.id] || "").trim();
+      if (note) msg += `   Catatan: ${note}\n`;
     });
     msg += `\nSubtotal: ${formatRupiah(subtotal)}`;
     if (appliedDiscount) {
@@ -139,8 +159,17 @@ if (deliveryMethod === "delivery") {
                     <Trash2 className="h-4 w-4" /> Hapus
                   </button>
                 </div>
+                  <input
+                    type="text"
+                    data-testid={`note-input-${it.id}`}
+                    placeholder="Catatan barang ini (warna, ukuran, dll.)"
+                    value={notes[it.id] || ""}
+                    onChange={(e) => setNote(it.id, e.target.value)}
+                    maxLength={150}
+                    className="mt-3 w-full rounded-full border border-[#E2E8F0] bg-[#FAF9F6] px-4 py-2 text-sm outline-none focus:border-[#1A202C]"
+                  />
+                </div>
               </div>
-            </div>
           ))}
 
           <button
@@ -259,13 +288,13 @@ if (deliveryMethod === "delivery") {
       <p className="mt-1 text-[11px] text-[#4A5568]">
         Ongkos kirim akan dikonfirmasi admin lewat WhatsApp.
         <a
-        href="/kalkulator-ongkir.html"
-        target="_blank"
-        rel="noreferrer"
-        data-testid="ongkir-calc-link"
-        className="mt-2 inline-block text-xs font-medium text-brand underline underline-offset-2"
->
-        Hitung perkiraan ongkir
+          href="/kalkulator-ongkir.html"
+          target="_blank"
+          rel="noreferrer"
+          data-testid="ongkir-calc-link"
+          className="mt-1 block text-xs font-medium text-brand underline underline-offset-2"
+        >
+          Hitung perkiraan ongkir
         </a>
       </p>
     </>
