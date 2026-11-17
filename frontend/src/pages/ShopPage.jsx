@@ -11,7 +11,13 @@ import { Search, ShoppingCart, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ShopPage() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("products_cache")) || [];
+    } catch {
+      return [];
+    }
+  });
   const [categories, setCategories] = useState([]);
   const [activeCat, setActiveCat] = useState("");
   const [query, setQuery] = useState("");
@@ -20,7 +26,13 @@ export default function ShopPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get("/products").then((r) => setProducts(r.data || [])).catch(() => {});
+    api.get("/products")
+      .then((r) => {
+        const data = r.data || [];
+        setProducts(data);
+        localStorage.setItem("products_cache", JSON.stringify(data));
+      })
+      .catch(() => {});
     api.get("/categories").then((r) => setCategories(r.data || [])).catch(() => {});
   }, []);
 
