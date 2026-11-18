@@ -93,8 +93,8 @@ a:focus-visible,button:focus-visible{outline:3px solid #BFD0F5;outline-offset:2p
 <body>
 <main class="wrap">
   <div class="brand">
-    <div class="mark" aria-hidden="true">L</div>
-    <div class="brand-name">Toko Lawanglimo</div>
+    <div <a class="mark" aria-hidden="true">L</div>
+    <a class="back" href="/cart">Toko Lawanglimo</a>
   </div>
 
   <h1>Perkiraan ongkir</h1>
@@ -135,7 +135,7 @@ const KM_PER_LITER    = 43;    // konsumsi BBM motor (km per liter)
 const SERVICE_FEE     = 2000;  // jasa pengantar, ditambahkan di atas biaya BBM (Rp)
 const OPERATIONAL_FEE = 0;     // biaya operasional tambahan (Rp)
 const MIN_FEE         = 0;     // ongkir minimum (Rp)
-const ROUNDING        = 1000;  // dibulatkan ke atas ke kelipatan ini (Rp)
+const ROUNDING        = 500;  // dibulatkan ke atas ke kelipatan ini (Rp)
 const MAX_KM          = 0;     // batas jarak antar, isi 0 jika tanpa batas
 const WA_NUMBER       = "6285742364953"; // format internasional, tanpa +
 
