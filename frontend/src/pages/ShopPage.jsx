@@ -9,7 +9,14 @@ import {
 } from "@/components/ui/dialog";
 import { Search, ShoppingCart, Zap } from "lucide-react";
 import { toast } from "sonner";
-
+const getMinPrice = (p) => {
+  const prices =
+    Array.isArray(p.variants) && p.variants.length > 0
+      ? p.variants.map((v) => Number(v.price))
+      : [Number(p.price)];
+  const m = Math.min(...prices);
+  return Number.isFinite(m) ? m : 0;
+};
 export default function ShopPage() {
   const [products, setProducts] = useState(() => {
     try {
@@ -21,6 +28,7 @@ export default function ShopPage() {
   const [categories, setCategories] = useState([]);
   const [activeCat, setActiveCat] = useState("");
   const [query, setQuery] = useState("");
+  const [sortBy, setSortBy] = useState("price-asc"); // default: termurah ke termahal
   const [variantPicker, setVariantPicker] = useState(null); // { product, action: 'cart'|'buy' }
   const { addItem } = useCart();
   const navigate = useNavigate();
@@ -37,10 +45,16 @@ export default function ShopPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    return products.filter((p) => {
-      if (activeCat && p.category !== activeCat) return false;
-      if (query && !p.name.toLowerCase().includes(query.toLowerCase())) return false;
-      return true;
+  const list = products.filter((p) => {
+    if (activeCat && p.category !== activeCat) return false;
+    if (query && !p.name.toLowerCase().includes(query.toLowerCase())) return false;
+    return true;
+  });
+  if (sortBy === "price-asc") list.sort((a, b) => getMinPrice(a) - getMinPrice(b));
+  else if (sortBy === "price-desc") list.sort((a, b) => getMinPrice(b) - getMinPrice(a));
+  else if (sortBy === "name-asc") list.sort((a, b) => a.name.localeCompare(b.name, "id"));
+  return list;
+}, [products, activeCat, query, sortBy]);
     });
   }, [products, activeCat, query]);
 
@@ -97,7 +111,24 @@ export default function ShopPage() {
           />
         </div>
       </div>
-
+      <div className="mt-4 flex justify-end">
+      <div className="flex items-center gap-2">
+        <label htmlFor="sort-select" className="text-sm text-[#4A5568] whitespace-nowrap">
+        Urutkan
+        </label>
+      <select
+        id="sort-select"
+        data-testid="sort-select"
+        value={sortBy}
+        onChange={(e) => setSortBy(e.target.value)}
+        className="h-9 rounded-full border border-[#E2E8F0] bg-white px-3 text-sm text-[#1A202C] outline-none focus:border-[#1A202C]"
+      >
+      <option value="price-asc">Termurah ke termahal</option>
+      <option value="price-desc">Termahal ke termurah</option>
+      <option value="name-asc">Nama A-Z</option>
+    </select>
+  </div>
+</div>
       {/* Filters */}
       <div data-testid="category-filter" className="mt-6 flex flex-wrap gap-2">
         <button
